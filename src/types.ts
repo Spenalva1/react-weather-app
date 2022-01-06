@@ -1,6 +1,6 @@
 export interface WeatherDay {
   airPressure: number;
-  date: number;
+  date: string;
   visibility: number;
   humidity: number;
   wind: {
