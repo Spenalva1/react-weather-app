@@ -26,6 +26,7 @@ export default function SearchModal() {
       px="12"
       display="flex"
       flexDirection="column"
+      gap="30px"
       background="#111322"
       zIndex={2}
     >

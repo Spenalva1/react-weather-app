@@ -1,16 +1,19 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Button,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
+  Text,
 } from '@chakra-ui/react';
 import { SyntheticEvent, useRef, useState } from 'react';
 import { useWeather } from '../contexts/weatherContext';
 
 export default function SearchForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>('');
   const { closeSearchModal, getWeather } = useWeather();
   const searchInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -22,41 +25,49 @@ export default function SearchForm() {
     try {
       await getWeather('query', searchInputRef.current.value);
       closeSearchModal();
-    } catch (error) {
+    } catch (weatherError) {
       console.error(error);
+      setError('Location weather cannot be found.');
       setIsLoading(false);
       searchInputRef.current.value = '';
     }
   };
 
   return (
-    <HStack as="form" mt={10} onSubmit={onSubmit}>
-      <InputGroup>
-        <InputLeftElement pointerEvents="none">
-          <SearchIcon color="gray.300" />
-        </InputLeftElement>
-        <Input
-          ref={searchInputRef}
+    <Box>
+      <HStack as="form" onSubmit={onSubmit}>
+        <InputGroup>
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.300" />
+          </InputLeftElement>
+          <Input
+            ref={searchInputRef}
+            borderRadius={0}
+            type="tel"
+            placeholder="search location"
+          />
+        </InputGroup>
+        <Button
+          isLoading={isLoading}
+          colorScheme="blue"
           borderRadius={0}
-          type="tel"
-          placeholder="search location"
-        />
-      </InputGroup>
-      <Button
-        isLoading={isLoading}
-        colorScheme="blue"
-        borderRadius={0}
-        background="#3C47E9"
-        _hover={{
-          background: '#1825D8',
-        }}
-        _active={{
-          background: '#131DAA',
-        }}
-        type="submit"
-      >
-        Search
-      </Button>
-    </HStack>
+          background="#3C47E9"
+          _hover={{
+            background: '#1825D8',
+          }}
+          _active={{
+            background: '#131DAA',
+          }}
+          type="submit"
+        >
+          Search
+        </Button>
+      </HStack>
+      {!!error?.length && !isLoading && (
+        <Text mt="2" color="red">
+          {error}
+        </Text>
+      )}
+    </Box>
   );
 }

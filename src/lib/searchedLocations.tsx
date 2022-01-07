@@ -6,7 +6,7 @@ export function getSearchedLocations(): string[] {
 }
 
 export function saveSearchedLocation(location: string) {
-  const searchedLocations = getSearchedLocations();
+  let searchedLocations = getSearchedLocations();
 
   if (
     searchedLocations.some((searchedLocation) => searchedLocation === location)
@@ -14,6 +14,10 @@ export function saveSearchedLocation(location: string) {
     return;
 
   searchedLocations.unshift(location);
+
+  if (searchedLocations.length > 6) {
+    searchedLocations = searchedLocations.slice(0, 6);
+  }
 
   localStorage.setItem(
     WEATHER_LOCATIONS_SEARCHED_KEY,
